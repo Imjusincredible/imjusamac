@@ -1,5 +1,5 @@
 <?php
-// $Id: settings.php,v 1.39.2.3 2007/07/09 04:28:12 drumm Exp $
+// $Id: default.settings.php,v 1.8.2.1 2008/08/13 06:52:36 dries Exp $
 
 /**
  * @file
@@ -82,7 +82,6 @@
  *     'sessions'  => 'shared_',
  *     'role'      => 'shared_',
  *     'authmap'   => 'shared_',
- *     'sequences' => 'shared_',
  *   );
  *
  * Database URL format:
@@ -91,7 +90,18 @@
  *   $db_url = 'pgsql://username:password@localhost/databasename';
  */
 $db_url = 'mysql://root:root@localhost:8889/imjusamac';
-$db_prefix = '';
+#$db_prefix = 'dru6_';
+
+/**
+ * Access control for update.php script
+ *
+ * If you are updating your Drupal installation using the update.php script
+ * being not logged in as administrator, you will need to modify the access
+ * check statement below. Change the FALSE to a TRUE to disable the access
+ * check. After finishing the upgrade, be sure to open this file again
+ * and change the TRUE back to a FALSE!
+ */
+$update_free_access = TRUE;
 
 /**
  * Base URL (optional).
@@ -144,7 +154,7 @@ ini_set('url_rewriter.tags',        '');
  * shared base domain. Doing so assures that users remain logged in as they
  * cross between your various domains.
  */
- $cookie_domain = '.imjusamac.com';
+ $cookie_domain = 'localhost:8888';
 
 /**
  * Variable overrides:
@@ -153,13 +163,65 @@ ini_set('url_rewriter.tags',        '');
  * set them here. You usually don't need to use this feature. This is
  * useful in a configuration file for a vhost or directory, rather than
  * the default settings.php. Any configuration setting from the 'variable'
- * table can be given a new value.
+ * table can be given a new value. Note that any values you provide in
+ * these variable overrides will not be modifiable from the Drupal
+ * administration interface.
  *
  * Remove the leading hash signs to enable.
  */
 # $conf = array(
-#   'site_name' => 'ImJusAmac | For all of your OSX needs',
-#   'theme_default' => 'garland',
+#   'site_name' => 'My Drupal site',
+#   'theme_default' => 'minnelli',
 #   'anonymous' => 'Visitor',
+/**
+ * A custom theme can be set for the off-line page. This applies when the site
+ * is explicitly set to off-line mode through the administration page or when
+ * the database is inactive due to an error. It can be set through the
+ * 'maintenance_theme' key. The template file should also be copied into the
+ * theme. It is located inside 'modules/system/maintenance-page.tpl.php'.
+ * Note: This setting does not apply to installation and update pages.
+ */
+#   'maintenance_theme' => 'minnelli',
+/**
+ * reverse_proxy accepts a boolean value.
+ *
+ * Enable this setting to determine the correct IP address of the remote
+ * client by examining information stored in the X-Forwarded-For headers.
+ * X-Forwarded-For headers are a standard mechanism for identifying client
+ * systems connecting through a reverse proxy server, such as Squid or
+ * Pound. Reverse proxy servers are often used to enhance the performance
+ * of heavily visited sites and may also provide other site caching,
+ * security or encryption benefits. If this Drupal installation operates
+ * behind a reverse proxy, this setting should be enabled so that correct
+ * IP address information is captured in Drupal's session management,
+ * logging, statistics and access management systems; if you are unsure
+ * about this setting, do not have a reverse proxy, or Drupal operates in
+ * a shared hosting environment, this setting should be set to disabled.
+ */
+#   'reverse_proxy' => TRUE,
+/**
+ * reverse_proxy accepts an array of IP addresses.
+ *
+ * Each element of this array is the IP address of any of your reverse
+ * proxies. Filling this array Drupal will trust the information stored
+ * in the X-Forwarded-For headers only if Remote IP address is one of
+ * these, that is the request reaches the web server from one of your
+ * reverse proxies. Otherwise, the client could directly connect to
+ * your web server spoofing the X-Forwarded-For headers.
+ */
+#   'reverse_proxy_addresses' => array('a.b.c.d', ...),
 # );
 
+/**
+ * String overrides:
+ *
+ * To override specific strings on your site with or without enabling locale
+ * module, add an entry to this list. This functionality allows you to change
+ * a small number of your site's default English language interface strings.
+ *
+ * Remove the leading hash signs to enable.
+ */
+# $conf['locale_custom_strings_en'] = array(
+#   'forum'      => 'Discussion board',
+#   '@count min' => '@count minutes',
+# );
