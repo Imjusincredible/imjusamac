@@ -1,7 +1,7 @@
-/* $Id: style.css,v 1.38.2.1 2008/02/05 09:27:26 goba Exp $ */
+/* $Id: style.css,v 1.14.2.4 2007/07/09 03:50:59 drumm Exp $ */
 
 /**
- * Garland, for Drupal 6.x
+ * Garland, for Drupal 5.0
  * Stefan Nagtegaal, iStyledThis [dot] nl
  * Steven Wittens, acko [dot] net`
  *
@@ -16,17 +16,17 @@ body {
   margin: 0;
   padding: 0;
   background: #edf5fa;
-  font: 12px/170% Verdana, sans-serif;
+  font: 12px/170% Verdana;
   color: #494949;
 }
 
 input {
-  font: 12px/100% Verdana, sans-serif;
+  font: 12px/100% "Verdana";
   color: #494949;
 }
 
 textarea, select {
-  font: 12px/160% Verdana, sans-serif;
+  font: 12px/160% "Verdana";
   color: #494949;
 }
 
@@ -98,46 +98,36 @@ ul {
   padding: 0;
 }
 
-ol {
-  margin: 0.75em 0 1.25em;
-  padding: 0;
-}
-
-ol li, ul li {
-  margin: 0.4em 0 0.4em .5em; /* LTR */
+ul li {
+  margin: 0.4em 0 0.4em .5em;
 }
 
 ul.menu, .item-list ul {
-  margin: 0.35em 0 0 -0.5em; /* LTR */
+  margin: 0.35em 0 0 -0.5em;
   padding: 0;
 }
 
 ul.menu ul, .item-list ul ul {
-  margin-left: 0em; /* LTR */
+  margin-left: 0em;
 }
 
-ol li, ul li, ul.menu li, .item-list ul li, li.leaf {
-  margin: 0.15em 0 0.15em .5em; /* LTR */
+ul li, ul.menu li, .item-list ul li, li.leaf {
+  margin: 0.15em 0 0.15em .5em;
 }
 
 ul li, ul.menu li, .item-list ul li, li.leaf {
   padding: 0 0 .2em 1.5em;
   list-style-type: none;
   list-style-image: none;
-  background: transparent url(images/menu-leaf.gif) no-repeat 1px .35em; /* LTR */
-}
-
-ol li {
-  padding: 0 0 .3em;
-  margin-left: 2em; /* LTR */
+  background: transparent url(images/menu-leaf.gif) no-repeat 1px .35em;
 }
 
 ul li.expanded {
-  background: transparent url(images/menu-expanded.gif) no-repeat 1px .35em; /* LTR */
+  background: transparent url(images/menu-expanded.gif) no-repeat 1px .35em;
 }
 
 ul li.collapsed {
-  background: transparent url(images/menu-collapsed.gif) no-repeat 0px .35em; /* LTR */
+  background: transparent url(images/menu-collapsed.gif) no-repeat 0px .35em;
 }
 
 ul li.leaf a, ul li.expanded a, ul li.collapsed a {
@@ -147,26 +137,7 @@ ul li.leaf a, ul li.expanded a, ul li.collapsed a {
 ul.inline li {
   background: none;
   margin: 0;
-  padding: 0 1em 0 0; /* LTR */
-}
-
-ol.task-list {
-  margin-left: 0; /* LTR */
-  list-style-type: none;
-  list-style-image: none;
-}
-ol.task-list li {
-  padding: 0.5em 1em 0.5em 2em; /* LTR */
-}
-ol.task-list li.active {
-  background: transparent url(images/task-list.png) no-repeat 3px 50%; /* LTR */
-}
-ol.task-list li.done {
-  color: #393;
-  background: transparent url(../../misc/watchdog-ok.png) no-repeat 0px 50%; /* LTR */
-}
-ol.task-list li.active {
-  margin-right: 1em; /* LTR */
+  padding: 0 1em 0 0;
 }
 
 fieldset ul.clear-block li {
@@ -176,14 +147,14 @@ fieldset ul.clear-block li {
 }
 
 dl {
-  margin: 0.5em 0 1em 1.5em; /* LTR */
+  margin: 0.5em 0 1em 1.5em;
 }
 
 dl dt {
 }
 
 dl dd {
-  margin: 0 0 .5em 1.5em; /* LTR */
+  margin: 0 0 .5em 1.5em;
 }
 
 img, a img {
@@ -222,14 +193,6 @@ tr.even {
   background-color: #fff;
 }
 
-tr.drag {
-  background-color: #fffff0;
-}
-
-tr.drag-previous {
-  background-color: #ffd;
-}
-
 tr.odd td.active {
   background-color: #ddecf5;
 }
@@ -238,7 +201,7 @@ tr.even td.active {
   background-color: #e6f1f7;
 }
 
-td.region, td.module, td.container, td.category {
+td.region, td.module, td.container {
   border-top: 1.5em solid #fff;
   border-bottom: 1px solid #b4d7f0;
   background-color: #d4e7f3;
@@ -246,7 +209,7 @@ td.region, td.module, td.container, td.category {
   font-weight: bold;
 }
 
-tr:first-child td.region, tr:first-child td.module, tr:first-child td.container, tr:first-child td.category {
+tr:first-child td.region, tr:first-child td.module, tr:first-child td.container {
   border-top-width: 0;
 }
 
@@ -283,10 +246,10 @@ span.submitted, .description {
 }
 
 .form-button, .form-submit {
-  margin: 2em 0.5em 1em 0; /* LTR */
+  margin: 2em 0.5em 1em 0;
 }
 
-#dblog-form-overview .form-submit,
+#watchdog-form-overview .form-submit,
 .confirmation .form-submit,
 .search-form .form-submit,
 .poll .form-submit,
@@ -328,7 +291,7 @@ table .form-button, table .form-submit {
   margin-bottom: 0;
 }
 
-/* Prevent the previous directive from showing the content of script elements in Mozilla browsers. */
+/* Avoid displaying content of script tags */
 #header-region script {
   display: none;
 }
@@ -338,7 +301,7 @@ table .form-button, table .form-submit {
 }
 
 #header-region h2 {
-  margin: 0 1em 0 0; /* LTR */
+  margin: 0 1em 0 0;
 }
 
 #header-region h3, #header-region label, #header-region li {
@@ -378,8 +341,8 @@ table .form-button, table .form-submit {
 
 #wrapper #container #header h1 img {
   padding-top: 16px;
-  padding-right: 20px; /* LTR */
-  float: left; /* LTR */
+  padding-right: 20px;
+  float: left;
 }
 
 /* With 3 columns, require a minimum width of 1000px to ensure there is enough horizontal space. */
@@ -445,11 +408,11 @@ body.sidebars #squeeze {
 }
 
 #sidebar-left .block-region {
-  margin: 0 15px 0 0px; /* LTR */
+  margin: 0 15px 0 0px;
 }
 
 #sidebar-right .block-region {
-  margin: 0 0px 0 15px; /* LTR */
+  margin: 0 0px 0 15px;
 }
 
 .block-region {
@@ -492,11 +455,11 @@ body.sidebars #squeeze {
 #wrapper #container .breadcrumb {
   position: absolute;
   top: 15px;
-  left: 35px; /* LTR */
+  left: 35px;
   z-index: 3;
 }
 
-body.sidebar-left #footer {
+body.sidebar-left  #footer {
   margin-left: -210px;
 }
 
@@ -543,7 +506,7 @@ body.sidebars #footer {
 ul.primary-links {
   margin: 0;
   padding: 0;
-  float: right; /* LTR */
+  float: right;
   position: relative;
   z-index: 4;
 }
@@ -551,7 +514,7 @@ ul.primary-links {
 ul.primary-links li {
   margin: 0;
   padding: 0;
-  float: left; /* LTR */
+  float: left;
   background-image: none;
 }
 
@@ -574,8 +537,8 @@ ul.primary-links li a:hover, ul.primary-links li a.active {
 ul.secondary-links {
   margin: 0;
   padding: 18px 0 0;
-  float: right; /* LTR */
-  clear: right; /* LTR */
+  float: right;
+  clear: right;
   position: relative;
   z-index: 4;
 }
@@ -583,7 +546,7 @@ ul.secondary-links {
 ul.secondary-links li {
   margin: 0;
   padding: 0;
-  float: left; /* LTR */
+  float: left;
   background-image: none;
 }
 
@@ -618,18 +581,18 @@ ul.primary, ul.primary li, ul.secondary, ul.secondary li {
 }
 ul.primary {
   padding: 0.5em 0 10px;
-  float: left; /* LTR */
+  float: left;
 }
 ul.secondary {
   clear: both;
-  text-align: left; /* LTR */
+  text-align: left;
   border-bottom: 1px solid #e9eff3;
   margin: -0.2em -26px 1em;
   padding: 0 26px 0.6em;
 }
 h2.with-tabs {
-  float: left; /* LTR */
-  margin: 0 2em 0 0; /* LTR */
+  float: left;
+  margin: 0 2em 0 0;
   padding: 0;
 }
 
@@ -638,7 +601,7 @@ ul.secondary li a, ul.secondary li.active a, ul.secondary li a:hover, ul.seconda
   border: 0;
   background: transparent;
   padding: 4px 1em;
-  margin: 0 0 0 1px; /* LTR */
+  margin: 0 0 0 1px;
   height: auto;
   text-decoration: none;
   position: relative;
@@ -666,13 +629,13 @@ ul.secondary li.active a {
 ul.links li, ul.inline li {
   margin-left: 0;
   margin-right: 0;
-  padding-left: 0; /* LTR */
-  padding-right: 1em; /* LTR */
+  padding-left: 0;
+  padding-right: 1em;
   background-image: none;
 }
 
 .node .links, .comment .links {
-  text-align: left; /* LTR */
+  text-align: left;
 }
 
 .node .links ul.links li, .comment .links ul.links li {}
@@ -684,20 +647,20 @@ ul.links li, ul.inline li {
 }
 
 .picture, .comment .submitted {
-  float: right; /* LTR */
-  clear: right; /* LTR */
-  padding-left: 1em; /* LTR */
+  float: right;
+  clear: right;
+  padding-left: 1em;
 }
 
 .new {
   color: #ffae00;
   font-size: 0.92em;
   font-weight: bold;
-  float: right; /* LTR */
+  float: right;
 }
 
 .terms {
-  float: right; /* LTR */
+  float: right;
 }
 
 .preview .node, .preview .comment, .sticky {
@@ -735,7 +698,7 @@ ul.links li, ul.inline li {
 }
 
 .indented {
-  margin-left: 25px; /* LTR */
+  margin-left: 25px;
 }
 
 .comment h3 a.active {
@@ -783,14 +746,14 @@ ul.links li, ul.inline li {
 /**
  * Menu.module
  */
-tr.menu-disabled {
-  opacity: 0.5;
-}
 tr.odd td.menu-disabled {
   background-color: #edf5fa;
 }
 tr.even td.menu-disabled {
   background-color: #fff;
+}
+td.menu-disabled {
+  opacity: 0.5;
 }
 
 /**
@@ -829,24 +792,9 @@ fieldset {
   background: #fff url(images/gradient-inner.png) repeat-x 0 0;
 }
 
-/* Targets IE 7. Fixes background image in field sets. */
-*:first-child+html fieldset {
-  padding: 0 1em 1em;
-  background-position: 0 .75em;
-  background-color: transparent;
-}
-
-*:first-child+html fieldset > .description, *:first-child+html fieldset .fieldset-wrapper .description {
-  padding-top: 1em;
-}
-
 fieldset legend {
   /* Fix disappearing legend in FFox */
   display: block;
-}
-
-*:first-child+html fieldset legend, *:first-child+html fieldset.collapsed legend {
-  display: inline;
 }
 
 html.js fieldset.collapsed {
@@ -856,29 +804,29 @@ html.js fieldset.collapsed {
 }
 
 html.js fieldset.collapsible legend a {
-  padding-left: 2em; /* LTR */
-  background: url(images/menu-expanded.gif) no-repeat 0% 50%; /* LTR */
+  padding-left: 2em;
+  background: url(images/menu-expanded.gif) no-repeat 0% 50%;
 }
 
 html.js fieldset.collapsed legend a {
-  background: url(images/menu-collapsed.gif) no-repeat 0% 50%; /* LTR */
+  background: url(images/menu-collapsed.gif) no-repeat 0% 50%;
 }
 
 /**
  * Syndication icons and block
  */
 #block-node-0 h2 {
-  float: left; /* LTR */
-  padding-right: 20px; /* LTR */
+  float: left;
+  padding-right: 20px;
 }
 
 #block-node-0 img, .feed-icon {
-  float: right; /* LTR */
+  float: right;
   padding-top: 4px;
 }
 
 #block-node-0 .content {
-  clear: right; /* LTR */
+  clear: right;
 }
 
 /**
@@ -888,32 +836,7 @@ html.js fieldset.collapsed legend a {
   text-align: center;
 }
 #user-login-form ul {
-  text-align: left; /* LTR */
-}
-
-/**
- * User profiles.
- */
-.profile {
-  margin-top: 1.5em;
-}
-.profile h3 {
-  border-bottom: 0;
-  margin-bottom: 1em;
-}
-.profile dl {
-  margin: 0;
-}
-.profile dt {
-  font-weight: normal;
-  color: #898989;
-  font-size: 0.92em;
-  line-height: 1.3em;
-  margin-top: 1.4em;
-  margin-bottom: 0.45em;
-}
-.profile dd {
-  margin-bottom: 1.6em;
+  text-align: left;
 }
 
 /**
@@ -933,11 +856,11 @@ div.item-list,
 }
 
 div.admin .left {
-  float: left; /* LTR */
+  float: left;
   width: 48%;
 }
 div.admin .right {
-  float: right; /* LTR */
+  float: right;
   width: 48%;
 }
 
@@ -972,21 +895,17 @@ tr.selected td a:link, tr.selected td a:visited, tr.selected td a:active {
   color: #d3e7f4;
 }
 
-tr.taxonomy-term-preview {
-  opacity: 0.5;
-}
-
-tr.taxonomy-term-divider-top {
-  border-bottom: none;
-}
-
-tr.taxonomy-term-divider-bottom {
-  border-top: 1px dotted #CCC;
-}
-
 /**
  * CSS support
  */
+span.clear {
+  display: block;
+  clear: both;
+  height: 1px;
+  line-height: 0px;
+  font-size: 0px;
+  margin-bottom: -1px;
+}
 
 /*******************************************************************
  * Color Module: Don't touch                                       *
@@ -1006,58 +925,57 @@ tr.taxonomy-term-divider-bottom {
 }
 
 div.status {
-  color: #33a333;
+  color: #3a3;
   border-color: #c7f2c8;
 }
 
-div.error, tr.error {
-  color: #a30000;
-  background-color: #FFCCCC;
+div.error {
+  color: #c52020;
 }
 
 .form-item input.error, .form-item textarea.error {
   border: 1px solid #c52020;
-  color: #363636;
+  color: #494949;
 }
 
 /**
- * dblog.module
+ * Watchdog.module
  */
-tr.dblog-user {
+tr.watchdog-user {
   background-color: #fcf9e5;
 }
 
-tr.dblog-user td.active {
+tr.watchdog-user td.active {
   background-color: #fbf5cf;
 }
 
-tr.dblog-content {
+tr.watchdog-content {
   background-color: #fefefe;
 }
 
-tr.dblog-content td.active {
+tr.watchdog-content td.active {
   background-color: #f5f5f5;
 }
 
-tr.dblog-warning {
+tr.watchdog-warning {
   background-color: #fdf5e6;
 }
 
-tr.dblog-warning td.active {
+tr.watchdog-warning td.active {
   background-color: #fdf2de;
 }
 
-tr.dblog-error {
+tr.watchdog-error {
   background-color: #fbe4e4;
 }
 
-tr.dblog-error td.active {
+tr.watchdog-error td.active {
   background-color: #fbdbdb;
 }
-tr.dblog-page-not-found, tr.dblog-access-denied {
+tr.watchdog-page-not-found, tr.watchdog-access-denied {
   background: #d7ffd7;
 }
-tr.dblog-page-not-found td.active, tr.dblog-access-denied td.active {
+tr.watchdog-page-not-found td.active, tr.watchdog-access-denied td.active {
   background: #c7eec7;
 }
 

@@ -1,5 +1,5 @@
 <?php
-// $Id: session.inc,v 1.44.2.6 2008/12/11 00:29:34 goba Exp $
+// $Id: session.inc,v 1.37.2.2 2007/07/26 19:16:45 drumm Exp $
 
 /**
  * @file
@@ -45,7 +45,7 @@ function sess_read($key) {
     }
   }
   // We didn't find the client's record (session has expired), or they are an anonymous user.
-  else {
+  else  {
     $session = isset($user->session) ? $user->session : '';
     $user = drupal_anonymous_user($session);
   }
@@ -57,26 +57,29 @@ function sess_write($key, $value) {
   global $user;
 
   // If saving of session data is disabled or if the client doesn't have a session,
-  // and one isn't being created ($value), do nothing. This keeps crawlers out of
-  // the session table. This reduces memory and server load, and gives more useful
-  // statistics. We can't eliminate anonymous session table rows without breaking
-  // the throttle module and the "Who's Online" block.
-  if (!session_save_session() || ($user->uid == 0 && empty($_COOKIE[session_name()]) && empty($value))) {
+  // and one isn't being created ($value), do nothing.
+  if (!session_save_session() || (empty($_COOKIE[session_name()]) && empty($value))) {
     return TRUE;
   }
 
-  db_query("UPDATE {sessions} SET uid = %d, cache = %d, hostname = '%s', session = '%s', timestamp = %d WHERE sid = '%s'", $user->uid, isset($user->cache) ? $user->cache : '', ip_address(), $value, time(), $key);
-  if (db_affected_rows()) {
-    // Last access time is updated no more frequently than once every 180 seconds.
-    // This reduces contention in the users table.
-    if ($user->uid && time() - $user->access > variable_get('session_write_interval', 180)) {
-      db_query("UPDATE {users} SET access = %d WHERE uid = %d", time(), $user->uid);
+  $result = db_query("SELECT sid FROM {sessions} WHERE sid = '%s'", $key);
+
+  if (!db_num_rows($result)) {
+    // Only save session data when when the browser sends a cookie. This keeps
+    // crawlers out of session table. This reduces memory and server load,
+    // and gives more useful statistics. We can't eliminate anonymous session
+    // table rows without breaking throttle module and "Who's Online" block.
+    if ($user->uid || $value || count($_COOKIE)) {
+      db_query("INSERT INTO {sessions} (sid, uid, cache, hostname, session, timestamp) VALUES ('%s', %d, %d, '%s', '%s', %d)", $key, $user->uid, $user->cache, $_SERVER["REMOTE_ADDR"], $value, time());
     }
   }
   else {
-    // If this query fails, another parallel request probably got here first.
-    // In that case, any session data generated in this request is discarded.
-    @db_query("INSERT INTO {sessions} (sid, uid, cache, hostname, session, timestamp) VALUES ('%s', %d, %d, '%s', '%s', %d)", $key, $user->uid, isset($user->cache) ? $user->cache : '', ip_address(), $value, time());
+    db_query("UPDATE {sessions} SET uid = %d, cache = %d, hostname = '%s', session = '%s', timestamp = %d WHERE sid = '%s'", $user->uid, $user->cache, $_SERVER["REMOTE_ADDR"], $value, time(), $key);
+
+    // TODO: this can be an expensive query. Perhaps only execute it every x minutes. Requires investigation into cache expiration.
+    if ($user->uid) {
+      db_query("UPDATE {users} SET access = %d WHERE uid = %d", time(), $user->uid);
+    }
   }
 
   return TRUE;
@@ -103,14 +106,15 @@ function sess_regenerate() {
 }
 
 /**
- * Counts how many users have sessions. Can count either anonymous sessions or authenticated sessions.
+ * Counts how many users have sessions. Can count either anonymous sessions, authenticated sessions, or both.
  *
  * @param int $timestamp
  *   A Unix timestamp representing a point of time in the past.
  *   The default is 0, which counts all existing sessions.
- * @param boolean $anonymous
+ * @param int $anonymous
  *   TRUE counts only anonymous users.
  *   FALSE counts only authenticated users.
+ *   Any other value will return the count of both authenticated and anonymous users.
  * @return  int
  *   The number of users with sessions.
  */
@@ -155,12 +159,12 @@ function sess_gc($lifetime) {
  *
  * This function allows the caller to temporarily disable writing of session data,
  * should the request end while performing potentially dangerous operations, such as
- * manipulating the global $user object.  See http://drupal.org/node/218104 for usage
+ * manipulating the global $user object.
  *
  * @param $status
  *   Disables writing of session data when FALSE, (re-)enables writing when TRUE.
- * @return
- *   FALSE if writing session data has been disabled. Otherwise, TRUE.
+ *
+ * @return FALSE if writing session data has been disabled. Otherwise, TRUE.
  */
 function session_save_session($status = NULL) {
   static $save_session = TRUE;

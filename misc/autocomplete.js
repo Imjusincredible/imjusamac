@@ -1,11 +1,11 @@
-// $Id: autocomplete.js,v 1.23 2008/01/04 11:53:21 goba Exp $
+// $Id: autocomplete.js,v 1.17 2007/01/09 07:31:04 drumm Exp $
 
 /**
- * Attaches the autocomplete behavior to all required fields
+ * Attaches the autocomplete behaviour to all required fields
  */
-Drupal.behaviors.autocomplete = function (context) {
+Drupal.autocompleteAutoAttach = function () {
   var acdb = [];
-  $('input.autocomplete:not(.autocomplete-processed)', context).each(function () {
+  $('input.autocomplete').each(function () {
     var uri = this.value;
     if (!acdb[uri]) {
       acdb[uri] = new Drupal.ACDB(uri);
@@ -14,9 +14,8 @@ Drupal.behaviors.autocomplete = function (context) {
       .attr('autocomplete', 'OFF')[0];
     $(input.form).submit(Drupal.autocompleteSubmit);
     new Drupal.jsAC(input, acdb[uri]);
-    $(this).addClass('autocomplete-processed');
   });
-};
+}
 
 /**
  * Prevents the form from submitting if the suggestions popup is open
@@ -26,7 +25,7 @@ Drupal.autocompleteSubmit = function () {
   return $('#autocomplete').each(function () {
     this.owner.hidePopup();
   }).size() == 0;
-};
+}
 
 /**
  * An AutoComplete object
@@ -38,7 +37,7 @@ Drupal.jsAC = function (input, db) {
 
   $(this.input)
     .keydown(function (event) { return ac.onkeydown(this, event); })
-    .keyup(function (event) { ac.onkeyup(this, event); })
+    .keyup(function (event) { ac.onkeyup(this, event) })
     .blur(function () { ac.hidePopup(); ac.db.cancel(); });
 
 };
@@ -60,7 +59,7 @@ Drupal.jsAC.prototype.onkeydown = function (input, e) {
     default: // all other keys
       return true;
   }
-};
+}
 
 /**
  * Handler for the "keyup" event
@@ -97,14 +96,14 @@ Drupal.jsAC.prototype.onkeyup = function (input, e) {
         this.hidePopup(e.keyCode);
       return true;
   }
-};
+}
 
 /**
  * Puts the currently highlighted suggestion into the autocomplete field
  */
 Drupal.jsAC.prototype.select = function (node) {
   this.input.value = node.autocompleteValue;
-};
+}
 
 /**
  * Highlights the next suggestion
@@ -119,7 +118,7 @@ Drupal.jsAC.prototype.selectDown = function () {
       this.highlight(lis.get(0));
     }
   }
-};
+}
 
 /**
  * Highlights the previous suggestion
@@ -128,7 +127,7 @@ Drupal.jsAC.prototype.selectUp = function () {
   if (this.selected && this.selected.previousSibling) {
     this.highlight(this.selected.previousSibling);
   }
-};
+}
 
 /**
  * Highlights a suggestion
@@ -139,7 +138,7 @@ Drupal.jsAC.prototype.highlight = function (node) {
   }
   $(node).addClass('selected');
   this.selected = node;
-};
+}
 
 /**
  * Unhighlights a suggestion
@@ -147,7 +146,7 @@ Drupal.jsAC.prototype.highlight = function (node) {
 Drupal.jsAC.prototype.unhighlight = function (node) {
   $(node).removeClass('selected');
   this.selected = false;
-};
+}
 
 /**
  * Hides the autocomplete suggestions
@@ -164,7 +163,7 @@ Drupal.jsAC.prototype.hidePopup = function (keycode) {
     $(popup).fadeOut('fast', function() { $(popup).remove(); });
   }
   this.selected = false;
-};
+}
 
 /**
  * Positions the suggestions popup and starts a search
@@ -188,7 +187,7 @@ Drupal.jsAC.prototype.populatePopup = function () {
   // Do search
   this.db.owner = this;
   this.db.search(this.input.value);
-};
+}
 
 /**
  * Fills the suggestion popup with any matches received
@@ -223,7 +222,7 @@ Drupal.jsAC.prototype.found = function (matches) {
       this.hidePopup();
     }
   }
-};
+}
 
 Drupal.jsAC.prototype.setStatus = function (status) {
   switch (status) {
@@ -236,7 +235,7 @@ Drupal.jsAC.prototype.setStatus = function (status) {
       $(this.input).removeClass('throbbing');
       break;
   }
-};
+}
 
 /**
  * An AutoComplete DataBase object
@@ -245,7 +244,7 @@ Drupal.ACDB = function (uri) {
   this.uri = uri;
   this.delay = 300;
   this.cache = {};
-};
+}
 
 /**
  * Performs a cached and delayed search
@@ -270,8 +269,9 @@ Drupal.ACDB.prototype.search = function (searchString) {
     $.ajax({
       type: "GET",
       url: db.uri +'/'+ Drupal.encodeURIComponent(searchString),
-      dataType: 'json',
-      success: function (matches) {
+      success: function (data) {
+        // Parse back result
+        var matches = Drupal.parseJson(data);
         if (typeof matches['status'] == 'undefined' || matches['status'] != 0) {
           db.cache[searchString] = matches;
           // Verify if these are still the matches the user wants to see
@@ -282,11 +282,11 @@ Drupal.ACDB.prototype.search = function (searchString) {
         }
       },
       error: function (xmlhttp) {
-        alert(Drupal.ahahError(xmlhttp, db.uri));
+        alert('An HTTP error '+ xmlhttp.status +' occured.\n'+ db.uri);
       }
     });
   }, this.delay);
-};
+}
 
 /**
  * Cancels the current autocomplete request
@@ -295,4 +295,9 @@ Drupal.ACDB.prototype.cancel = function() {
   if (this.owner) this.owner.setStatus('cancel');
   if (this.timer) clearTimeout(this.timer);
   this.searchString = '';
-};
+}
+
+// Global Killswitch
+if (Drupal.jsEnabled) {
+  $(document).ready(Drupal.autocompleteAutoAttach);
+}

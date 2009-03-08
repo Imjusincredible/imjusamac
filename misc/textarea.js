@@ -1,12 +1,8 @@
-// $Id: textarea.js,v 1.22 2008/01/17 19:31:56 goba Exp $
+// $Id: textarea.js,v 1.11.2.1 2007/04/18 02:41:19 drumm Exp $
 
-Drupal.behaviors.textarea = function(context) {
-  $('textarea.resizable:not(.textarea-processed)', context).each(function() {
-    // Avoid non-processed teasers.
-    if ($(this).is(('textarea.teaser:not(.teaser-processed)'))) {
-      return false;  
-    }
-    var textarea = $(this).addClass('textarea-processed'), staticOffset = null;
+Drupal.textareaAttach = function() {
+  $('textarea.resizable:not(.processed)').each(function() {
+    var textarea = $(this).addClass('processed'), staticOffset = null;
 
     // When wrapping the text area, work around an IE margin bug.  See:
     // http://jaspan.com/ie-inherited-margin-bug-form-elements-and-haslayout
@@ -17,20 +13,24 @@ Drupal.behaviors.textarea = function(context) {
     grippie.style.marginRight = (grippie.offsetWidth - $(this)[0].offsetWidth) +'px';
 
     function startDrag(e) {
-      staticOffset = textarea.height() - e.pageY;
+      staticOffset = textarea.height() - Drupal.mousePosition(e).y;
       textarea.css('opacity', 0.25);
       $(document).mousemove(performDrag).mouseup(endDrag);
       return false;
     }
 
     function performDrag(e) {
-      textarea.height(Math.max(32, staticOffset + e.pageY) + 'px');
+      textarea.height(Math.max(32, staticOffset + Drupal.mousePosition(e).y) + 'px');
       return false;
     }
 
     function endDrag(e) {
-      $(document).unbind("mousemove", performDrag).unbind("mouseup", endDrag);
+      $(document).unmousemove(performDrag).unmouseup(endDrag);
       textarea.css('opacity', 1);
     }
   });
-};
+}
+
+if (Drupal.jsEnabled) {
+  $(document).ready(Drupal.textareaAttach);
+}

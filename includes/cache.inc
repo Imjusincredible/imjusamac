@@ -1,37 +1,32 @@
 <?php
-// $Id: cache.inc,v 1.17 2008/01/29 11:36:06 goba Exp $
+// $Id: cache.inc,v 1.5.2.4 2007/06/27 03:35:48 drumm Exp $
 
 /**
- * Return data from the persistent cache. Data may be stored as either plain text or as serialized data.
- * cache_get will automatically return unserialized objects and arrays.
+ * Return data from the persistent cache.
  *
- * @param $cid
+ * @param $key
  *   The cache ID of the data to retrieve.
  * @param $table
  *   The table $table to store the data in. Valid core values are 'cache_filter',
  *   'cache_menu', 'cache_page', or 'cache' for the default cache.
  */
-function cache_get($cid, $table = 'cache') {
+function cache_get($key, $table = 'cache') {
   global $user;
 
   // Garbage collection necessary when enforcing a minimum cache lifetime
   $cache_flush = variable_get('cache_flush', 0);
   if ($cache_flush && ($cache_flush + variable_get('cache_lifetime', 0) <= time())) {
-    // Reset the variable immediately to prevent a meltdown in heavy load situations.
-    variable_set('cache_flush', 0);
     // Time to flush old cache data
     db_query("DELETE FROM {". $table ."} WHERE expire != %d AND expire <= %d", CACHE_PERMANENT, $cache_flush);
+    variable_set('cache_flush', 0);
   }
 
-  $cache = db_fetch_object(db_query("SELECT data, created, headers, expire, serialized FROM {". $table ."} WHERE cid = '%s'", $cid));
+  $cache = db_fetch_object(db_query("SELECT data, created, headers, expire FROM {". $table ."} WHERE cid = '%s'", $key));
   if (isset($cache->data)) {
     // If the data is permanent or we're not enforcing a minimum cache lifetime
     // always return the cached data.
     if ($cache->expire == CACHE_PERMANENT || !variable_get('cache_lifetime', 0)) {
       $cache->data = db_decode_blob($cache->data);
-      if ($cache->serialized) {
-        $cache->data = unserialize($cache->data);
-      }
     }
     // If enforcing a minimum cache lifetime, validate that the data is
     // currently valid for this user before we return it by making sure the
@@ -45,9 +40,6 @@ function cache_get($cid, $table = 'cache') {
       }
       else {
         $cache->data = db_decode_blob($cache->data);
-        if ($cache->serialized) {
-          $cache->data = unserialize($cache->data);
-        }
       }
     }
     return $cache;
@@ -82,12 +74,11 @@ function cache_get($cid, $table = 'cache') {
  *
  * @param $cid
  *   The cache ID of the data to store.
- * @param $data
- *   The data to store in the cache. Complex data types will be automatically serialized before insertion.
- *   Strings will be stored as plain text and not serialized.
  * @param $table
  *   The table $table to store the data in. Valid core values are 'cache_filter',
  *   'cache_menu', 'cache_page', or 'cache'.
+ * @param $data
+ *   The data to store in the cache. Complex data types must be serialized first.
  * @param $expire
  *   One of the following values:
  *   - CACHE_PERMANENT: Indicates that the item should never be removed unless
@@ -99,23 +90,19 @@ function cache_get($cid, $table = 'cache') {
  * @param $headers
  *   A string containing HTTP header information for cached pages.
  */
-function cache_set($cid, $data, $table = 'cache', $expire = CACHE_PERMANENT, $headers = NULL) {
-  $serialized = 0;
-  if (is_object($data) || is_array($data)) {
-    $data = serialize($data);
-    $serialized = 1;
-  }
-  $created = time();
-  db_query("UPDATE {". $table ."} SET data = %b, created = %d, expire = %d, headers = '%s', serialized = %d WHERE cid = '%s'", $data, $created, $expire, $headers, $serialized, $cid);
+function cache_set($cid, $table = 'cache', $data, $expire = CACHE_PERMANENT, $headers = NULL) {
+  db_lock_table($table);
+  db_query("UPDATE {". $table. "} SET data = %b, created = %d, expire = %d, headers = '%s' WHERE cid = '%s'", $data, time(), $expire, $headers, $cid);
   if (!db_affected_rows()) {
-    @db_query("INSERT INTO {". $table ."} (cid, data, created, expire, headers, serialized) VALUES ('%s', %b, %d, %d, '%s', %d)", $cid, $data, $created, $expire, $headers, $serialized);
+    @db_query("INSERT INTO {". $table. "} (cid, data, created, expire, headers) VALUES ('%s', %b, %d, %d, '%s')", $cid, $data, time(), $expire, $headers);
   }
+  db_unlock_tables();
 }
 
 /**
  *
  * Expire data from the cache. If called without arguments, expirable
- * entries will be cleared from the cache_page and cache_block tables.
+ * entries will be cleared from the cache_page table.
  *
  * @param $cid
  *   If set, the cache ID to delete. Otherwise, all cache entries that can
@@ -134,9 +121,6 @@ function cache_clear_all($cid = NULL, $table = NULL, $wildcard = FALSE) {
   global $user;
 
   if (!isset($cid) && !isset($table)) {
-    // Clear the block cache first, so stale data will
-    // not end up in the page cache.
-    cache_clear_all(NULL, 'cache_block');
     cache_clear_all(NULL, 'cache_page');
     return;
   }
@@ -157,26 +141,26 @@ function cache_clear_all($cid = NULL, $table = NULL, $wildcard = FALSE) {
       else if (time() > ($cache_flush + variable_get('cache_lifetime', 0))) {
         // Clear the cache for everyone, cache_flush_delay seconds have
         // passed since the first request to clear the cache.
-        db_query("DELETE FROM {". $table ."} WHERE expire != %d AND expire < %d", CACHE_PERMANENT, time());
+        db_query("DELETE FROM {". $table. "} WHERE expire != %d AND expire < %d", CACHE_PERMANENT, time());
         variable_set('cache_flush', 0);
       }
     }
     else {
       // No minimum cache lifetime, flush all temporary cache entries now.
-      db_query("DELETE FROM {". $table ."} WHERE expire != %d AND expire < %d", CACHE_PERMANENT, time());
+      db_query("DELETE FROM {". $table. "} WHERE expire != %d AND expire < %d", CACHE_PERMANENT, time());
     }
   }
   else {
     if ($wildcard) {
       if ($cid == '*') {
-        db_query("DELETE FROM {". $table ."}");
+        db_query("DELETE FROM {". $table. "}");
       }
       else {
-        db_query("DELETE FROM {". $table ."} WHERE cid LIKE '%s%%'", $cid);
+        db_query("DELETE FROM {". $table. "} WHERE cid LIKE '%s%%'", $cid);
       }
     }
     else {
-      db_query("DELETE FROM {". $table ."} WHERE cid = '%s'", $cid);
+      db_query("DELETE FROM {". $table. "} WHERE cid = '%s'", $cid);
     }
   }
 }

@@ -1,4 +1,4 @@
-# $Id: robots.txt,v 1.9.2.1 2008/12/10 20:12:19 goba Exp $
+# $Id: robots.txt,v 1.7.2.1 2007/03/23 18:57:07 drumm Exp $
 #
 # robots.txt
 #
@@ -20,27 +20,30 @@
 User-agent: *
 Crawl-delay: 10
 # Directories
+Disallow: /database/
 Disallow: /includes/
 Disallow: /misc/
 Disallow: /modules/
-Disallow: /profiles/
-Disallow: /scripts/
 Disallow: /sites/
 Disallow: /themes/
+Disallow: /scripts/
+Disallow: /updates/
+Disallow: /profiles/
 # Files
-Disallow: /CHANGELOG.txt
+Disallow: /xmlrpc.php
 Disallow: /cron.php
-Disallow: /INSTALL.mysql.txt
-Disallow: /INSTALL.pgsql.txt
+Disallow: /update.php
 Disallow: /install.php
 Disallow: /INSTALL.txt
-Disallow: /LICENSE.txt
+Disallow: /INSTALL.mysql.txt
+Disallow: /INSTALL.pgsql.txt
+Disallow: /CHANGELOG.txt
 Disallow: /MAINTAINERS.txt
-Disallow: /update.php
+Disallow: /LICENSE.txt
 Disallow: /UPGRADE.txt
-Disallow: /xmlrpc.php
 # Paths (clean URLs)
 Disallow: /admin/
+Disallow: /aggregator/
 Disallow: /comment/reply/
 Disallow: /contact/
 Disallow: /logout/
@@ -51,6 +54,7 @@ Disallow: /user/password/
 Disallow: /user/login/
 # Paths (no clean URLs)
 Disallow: /?q=admin/
+Disallow: /?q=aggregator/
 Disallow: /?q=comment/reply/
 Disallow: /?q=contact/
 Disallow: /?q=logout/
