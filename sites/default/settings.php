@@ -90,7 +90,7 @@
  *   $db_url = 'mysqli://username:password@localhost/databasename';
  *   $db_url = 'pgsql://username:password@localhost/databasename';
  */
-$db_url = 'mysql://root:root@localhost:8889/test';
+$db_url = 'mysql://root:root@localhost:8889/imjusamac';
 $db_prefix = '';
 
 /**
@@ -112,7 +112,7 @@ $db_prefix = '';
  * It is not allowed to have a trailing slash; Drupal will add it
  * for you.
  */
-# $base_url = 'http://www.example.com';  // NO trailing slash!
+ $base_url = 'http://localhost:8888/ImJusAmac';  // NO trailing slash!
 
 /**
  * PHP settings:
@@ -144,7 +144,7 @@ ini_set('url_rewriter.tags',        '');
  * shared base domain. Doing so assures that users remain logged in as they
  * cross between your various domains.
  */
-# $cookie_domain = 'example.com';
+ $cookie_domain = 'imjusamac.com';
 
 /**
  * Variable overrides:
@@ -157,9 +157,9 @@ ini_set('url_rewriter.tags',        '');
  *
  * Remove the leading hash signs to enable.
  */
-# $conf = array(
-#   'site_name' => 'My Drupal site',
-#   'theme_default' => 'minnelli',
-#   'anonymous' => 'Visitor',
-# );
+ $conf = array(
+   'site_name' => 'ImJusAmac',
+   'theme_default' => 'garland',
+   'anonymous' => 'Visitor',
+ );
 
