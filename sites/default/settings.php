@@ -157,9 +157,9 @@ ini_set('url_rewriter.tags',        '');
  *
  * Remove the leading hash signs to enable.
  */
- $conf = array(
-   'site_name' => 'ImJusAmac',
-   'theme_default' => 'garland',
-   'anonymous' => 'Visitor',
- );
+# $conf = array(
+#   'site_name' => 'ImJusAmac | For all of your OSX needs',
+#   'theme_default' => 'garland',
+#   'anonymous' => 'Visitor',
+# );
 
